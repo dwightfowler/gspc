@@ -45,38 +45,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @OnClick(R.id.refreshMarketIndex)
     public void onClick(View item) {
-        IntrinioApi api = retrofit.create(IntrinioApi.class);
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Authorization", IntrinioController.key);
-        Call<String> call = api.getPrice(headers, "ind_NX6GzO", IntrinioController.key);
-        call.enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                for (Map.Entry<String, List<String>> header : call.request().headers().toMultimap().entrySet()) {
-                    Log.i(TAG, "Header: " + header.getKey() + " = " + header.getValue().get(0));
-                }
-                if (response.isSuccessful()) {
-                    String sPrice = response.body();
-                    Log.i(TAG, "Message: " + sPrice);
-                    float price = sPrice == null || sPrice.isEmpty() ? 0.0f : Float.parseFloat(sPrice);
-                    PriceModel.Instance.add(new PriceDataPoint(price, new Date()));
-                    adapter.notifyDataSetChanged();
-                } else {
-                    Log.e(TAG, "HTTP Result Code: " + response.code());
-                    try {
-                        Log.e(TAG, "Error Response: " + response.errorBody().string());
-                    } catch (IOException ignore) {
+        if (item.getId() == R.id.refreshMarketIndex) {
+            IntrinioApi api = retrofit.create(IntrinioApi.class);
+            Map<String, String> headers = new HashMap<>();
+            headers.put("Authorization", IntrinioController.key);
+            Call<String> call = api.getPrice(headers, "ind_NX6GzO", IntrinioController.key);
+            call.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, Response<String> response) {
+                    for (Map.Entry<String, List<String>> header : call.request().headers().toMultimap().entrySet()) {
+                        Log.i(TAG, "Header: " + header.getKey() + " = " + header.getValue().get(0));
+                    }
+                    if (response.isSuccessful()) {
+                        String sPrice = response.body();
+                        Log.i(TAG, "Message: " + sPrice);
+                        float price = sPrice == null || sPrice.isEmpty() ? 0.0f : Float.parseFloat(sPrice);
+                        PriceModel.Instance.add(new PriceDataPoint(price, new Date()));
+                        adapter.notifyDataSetChanged();
+                    } else {
+                        Log.e(TAG, "HTTP Result Code: " + response.code());
+                        try {
+                            Log.e(TAG, "Error Response: " + response.errorBody().string());
+                        } catch (IOException ignore) {
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                Log.e(TAG, t.getMessage());
-                for (Map.Entry<String, List<String>> header : call.request().headers().toMultimap().entrySet()) {
-                    Log.i(TAG, "Header: " + header.getKey() + " " + header.getValue().get(0));
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    Log.e(TAG, t.getMessage());
+                    for (Map.Entry<String, List<String>> header : call.request().headers().toMultimap().entrySet()) {
+                        Log.i(TAG, "Header: " + header.getKey() + " " + header.getValue().get(0));
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 }
