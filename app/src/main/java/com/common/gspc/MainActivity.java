@@ -21,7 +21,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity {
     private final String TAG = this.getClass().getSimpleName();
     @BindView(R.id.quoteList)
     RecyclerView priceList;
@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         ButterKnife.bind(this);
 
-        retrofit = IntrinioController.getRetrofit();
+        retrofit = WebServices.getRetrofit();
 
         priceList.setHasFixedSize(true);
         priceList.setLayoutManager(new LinearLayoutManager(this));
@@ -47,8 +47,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View item) {
         IntrinioApi api = retrofit.create(IntrinioApi.class);
         Map<String, String> headers = new HashMap<>();
-        headers.put("Authorization", IntrinioController.key);
-        Call<String> call = api.getPrice(headers, "ind_NX6GzO", IntrinioController.key);
+        headers.put("Authorization", WebServices.key);
+        Call<String> call = api.getPrice(headers, "ind_NX6GzO", WebServices.key);
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {

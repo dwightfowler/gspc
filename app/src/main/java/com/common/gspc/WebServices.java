@@ -7,7 +7,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
-public class IntrinioController
+public class WebServices
 {
     static final String key = "OmVmODUyOTU2M2Q1NmI2MDQxNTlhYmQ1NjYzYTk3NmZl";
     private static final String baseUrl = "https://api-v2.intrinio.com/";
